@@ -38,10 +38,13 @@ restaurant-ordering-system-backend-codex/
 ├── README.md
 ├── GUIA_APRESENTACAO.md
 ├── CHECKLIST_APS.md
+├── VALIDACAO_SUPABASE.md
 ├── package.json
 ├── package-lock.json
 ├── tsconfig.json
-├── database/create_tables.sql
+├── database/
+│   ├── create_tables.sql
+│   └── certs/supabase-root-2021.crt
 ├── postman/Confectionery Orders API.postman_collection.json
 ├── tests/
 │   ├── api.test.cjs
@@ -134,7 +137,7 @@ Para PostgreSQL local sem TLS, use uma URL local sem `sslmode`. Para Supabase, m
 
 O backend usa `pg` com a conexão administrativa (`postgres`) do Supabase. As duas tabelas têm RLS habilitado sem políticas públicas: a Data API não libera suas linhas para usuários anônimos. A conexão administrativa do backend tem acesso. Não são necessárias chaves `anon` ou `service_role` na aplicação.
 
-Não foi fornecida conexão Supabase nesta entrega: a execução hospedada ainda deve ser confirmada. Nenhuma tabela remota foi alterada. Caso já existam tabelas antigas no projeto hospedado, elas permanecem intactas e não são usadas pela API; sua eventual remoção deve ser avaliada separadamente.
+A conexão real foi validada em 30/09/2026 (America/Sao_Paulo) no projeto `restaurant-ordering-system` (`uxrixrkhrvzgitsjfgml`), usando Session Pooler `aws-0-sa-east-1.pooler.supabase.com:5432`, banco `postgres` e TLS `verify-full`. Os 11 endpoints e os erros 400/404/409 passaram, e os registros de teste foram excluídos. Nenhuma tabela remota foi criada, removida ou alterada nesta validação. Caso já existam tabelas antigas no projeto hospedado, elas permanecem intactas e não são usadas pela API; sua eventual remoção deve ser avaliada separadamente.
 
 Referência: [conexão PostgreSQL no Supabase](https://supabase.com/docs/guides/database/connecting-to-postgres).
 
@@ -246,10 +249,24 @@ npm run build
 npm test
 ```
 
-Os testes HTTP executam o SQL real em PGlite, sem credenciais nem acesso ao Supabase. Cobrem os 11 endpoints, regras de validação, integridade referencial, timestamps e erros. O teste de inicialização executa `dist/server.js` em processo separado com transporte de banco adaptado para PGlite. Isso valida o servidor e a lógica SQL, mas **não** valida rede, TLS, permissões ou conectividade do Supabase; confirme esses pontos com `.env` real e Postman.
+Os testes HTTP executam o SQL real em PGlite, sem credenciais nem acesso ao Supabase. Cobrem os 11 endpoints, regras de validação, integridade referencial, timestamps e erros. O teste de inicialização executa `dist/server.js` em processo separado com transporte de banco adaptado para PGlite. Isso valida o servidor e a lógica SQL, mas **não** valida rede, TLS, permissões ou conectividade do Supabase; esses pontos foram verificados separadamente na validação real descrita acima. Consulte `VALIDACAO_SUPABASE.md` para os resultados.
 
 Não há frontend, autenticação, pagamentos ou estoque. A API destina-se à demonstração acadêmica em ambiente controlado.
 
 ## Git
 
 Histórico original preservado: `96b31b3`, `7f9520b`, `c6fef4c`. Branch `main`. O remote local foi mantido e nenhum push foi realizado. Após receber a URL real do repositório, confira o destino antes de substituir `origin` e publicar normalmente, sem force push.
+
+## Configuração local validada
+
+Nesta máquina, a porta 3000 já estava ocupada. O `.env` local usa `PORT=3001`; no Postman, configure `baseUrl=http://localhost:3001`. O padrão do projeto e da coleção continua sendo 3000.
+
+O Session Pooler exigiu o certificado raiz público incluído em `database/certs/supabase-root-2021.crt`. Configure no `.env`, executando os comandos na raiz do projeto:
+
+```env
+PGSSLROOTCERT=database/certs/supabase-root-2021.crt
+```
+
+A URL deve conservar `?sslmode=verify-full`. O certificado não contém chave privada. Ele foi obtido por HTTPS no [distribuidor do Supabase](https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt). Para certificados futuros, use o painel do projeto conforme a [documentação TLS](https://supabase.com/docs/guides/platform/ssl-enforcement).
+
+Ao montar a URL, codifique apenas a senha com percent-encoding (por exemplo, `@` vira `%40`, `#` vira `%23` e `%` vira `%25`), sem codificar a URL inteira nem repetir a codificação. Não envie credenciais ao chat nem as coloque em documentação ou commits.

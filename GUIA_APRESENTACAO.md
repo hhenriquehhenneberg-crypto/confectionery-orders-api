@@ -67,4 +67,4 @@ Abra `OrderController.ts` e mostre a validação do cliente. Abra `OrderReposito
 
 ## O que dizer sobre os testes
 
-O build e typecheck verificam TypeScript. `npm test` verifica o comportamento HTTP e o SQL usando PostgreSQL embarcado. A demonstração com seu Supabase confirma a conexão externa, que não foi disponibilizada durante a implementação.
+O build e typecheck verificam TypeScript. `npm test` verifica o comportamento HTTP e o SQL usando PostgreSQL embarcado. A conexão externa foi posteriormente validada com CRUD real no Supabase. Consulte VALIDACAO_SUPABASE.md. Nesta máquina, use baseUrl=http://localhost:3001, pois a porta 3000 está ocupada.

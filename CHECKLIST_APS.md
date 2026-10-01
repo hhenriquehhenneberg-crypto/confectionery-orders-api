@@ -1,6 +1,6 @@
 # Checklist da APS — Confectionery Orders API
 
-Itens marcados foram confirmados no código e/ou nos testes locais. O Supabase hospedado permanece explicitamente pendente por falta de conexão fornecida.
+Itens marcados foram confirmados no código e/ou nos testes locais. O Supabase hospedado foi validado separadamente por HTTP e consultas ao catálogo PostgreSQL; veja VALIDACAO_SUPABASE.md.
 
 ## Requisitos
 
@@ -8,7 +8,7 @@ Itens marcados foram confirmados no código e/ou nos testes locais. O Supabase h
 - [x] TypeScript — strict; build e typecheck sem erros.
 - [x] Express — rotas HTTP e express.json().
 - [x] Persistência PostgreSQL compatível com Supabase — pg, DATABASE_URL e SQL executado em PostgreSQL embarcado.
-- [ ] Supabase hospedado — aplicar SQL, configurar conexão privada e confirmar CRUD remotamente.
+- [x] Supabase hospedado — conexão TLS e CRUD real confirmados; esquema preexistente inspecionado sem executar DDL.
 - [x] Duas entidades principais relacionadas: Customer 1:N Order.
 - [x] UUID automático nas duas entidades.
 - [x] Primary Keys e Foreign Key obrigatória.
@@ -82,7 +82,10 @@ Itens marcados foram confirmados no código e/ou nos testes locais. O Supabase h
 - [x] npm run typecheck — sem erros.
 - [x] npm test — testes HTTP, SQL e inicialização em processo separado.
 - [x] Revisão de diff, arquivos novos e padrões de credenciais.
-- [ ] Demonstração com Postman conectado ao Supabase real.
+- [x] Roteiro de CRUD e erros executado por script HTTP contra a API conectada ao Supabase real.
+- [ ] Apresentação manual no Postman — atividade de demonstração; coleção fornecida.
 - [ ] URL real do GitHub informada/configurada para publicação; origin local preservado sem push.
 
 O teste de inicialização utiliza o servidor compilado e adapta o transporte de pg para PGlite. Não comprova rede, TLS ou permissões de um projeto Supabase. Os testes não alteram bancos externos.
+
+A validação externa posterior confirmou rede, autenticação e TLS verify-full com o certificado público incluído. Dados de teste foram removidos; tabelas antigas permaneceram intactas.
