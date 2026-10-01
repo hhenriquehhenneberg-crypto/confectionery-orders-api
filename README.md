@@ -36,7 +36,7 @@ UUIDs são gerados pelo PostgreSQL com `gen_random_uuid()`. A FK impede encomend
 ## Estrutura
 
 ```text
-restaurant-ordering-system-backend-codex/
+confectionery-orders-api/
 ├── .env.example
 ├── .gitignore
 ├── README.md
@@ -84,18 +84,17 @@ restaurant-ordering-system-backend-codex/
 
 Pré-requisitos: Node.js 22+, npm e um banco PostgreSQL/Supabase configurado.
 
-Para clonar futuramente, substitua o marcador pela URL real; não use o caminho do bundle:
+Para clonar o projeto:
 
 ```bash
-git clone URL_REAL_DO_REPOSITORIO
-cd NOME_DA_PASTA_CLONADA
+git clone https://github.com/hhenriquehhenneberg-crypto/confectionery-orders-api.git
+cd confectionery-orders-api
 npm install
 ```
 
-Se já extraiu esta cópia, entre na pasta existente:
+Se já possui a cópia local, basta entrar na pasta do projeto e executar:
 
 ```bash
-cd restaurant-ordering-system-backend-codex
 npm install
 ```
 
@@ -259,7 +258,7 @@ Não há frontend, autenticação, pagamentos ou estoque. A API destina-se à de
 
 ## Git
 
-Histórico original preservado: `96b31b3`, `7f9520b`, `c6fef4c`. Branch `main`. O remote local foi mantido e nenhum push foi realizado. Após receber a URL real do repositório, confira o destino antes de substituir `origin` e publicar normalmente, sem force push.
+Histórico original preservado: `96b31b3`, `7f9520b`, `c6fef4c`. Branch `main`. O projeto está publicado em `https://github.com/hhenriquehhenneberg-crypto/confectionery-orders-api` e o remote `origin` deve apontar para esse repositório. O arquivo `.env` permanece fora do versionamento.
 
 ## Configuração local validada
 
