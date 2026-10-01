@@ -5,7 +5,7 @@ API REST para uma confeitaria organizar clientes e encomendas personalizadas, re
 ## Integrantes
 
 - Henrique Henneberg
-- Outros integrantes: ____________________
+- Carlos Bueno
 
 ## Tecnologias
 
