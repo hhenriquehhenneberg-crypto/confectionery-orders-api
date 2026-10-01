@@ -1,23 +1,30 @@
 {
-  "name": "restaurant-ordering-system-backend",
+  "name": "confectionery-orders-api",
   "version": "1.0.0",
-  "description": "Back-end do sistema de autoatendimento para restaurantes",
+  "description": "API REST para gerenciamento de clientes e encomendas de uma confeitaria",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test tests/*.test.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
-    "pg": "^8.13.0"
+    "pg": "^8.13.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
+    "@types/express": "^4.17.21",
     "@types/node": "^22.7.4",
     "@types/pg": "^8.11.10",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "@electric-sql/pglite": "^0.3.14"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
