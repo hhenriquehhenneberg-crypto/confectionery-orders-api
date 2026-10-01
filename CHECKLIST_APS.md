@@ -84,7 +84,7 @@ Itens marcados foram confirmados no código e/ou nos testes locais. O Supabase h
 - [x] Revisão de diff, arquivos novos e padrões de credenciais.
 - [x] Roteiro de CRUD e erros executado por script HTTP contra a API conectada ao Supabase real.
 - [ ] Apresentação manual no Postman — atividade de demonstração; coleção fornecida.
-- [ ] URL real do GitHub informada/configurada para publicação; origin local preservado sem push.
+- [x] URL real do GitHub configurada e branch main publicada no repositório final.
 
 O teste de inicialização utiliza o servidor compilado e adapta o transporte de pg para PGlite. Não comprova rede, TLS ou permissões de um projeto Supabase. Os testes não alteram bancos externos.
 
