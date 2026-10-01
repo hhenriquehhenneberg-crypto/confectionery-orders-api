@@ -11,7 +11,11 @@ API REST para uma confeitaria organizar clientes e encomendas personalizadas, re
 
 Node.js 22+, TypeScript (strict), Express 4, PostgreSQL hospedado no Supabase, `pg`, Zod, dotenv e Git. Postman é usado por meio da coleção incluída. Os testes usam o runner do Node.js e PGlite (PostgreSQL compilado para WASM, somente desenvolvimento).
 
-A URL real do GitHub não foi fornecida. O `origin` desta cópia aponta para um bundle local; não é um endereço de publicação e não deve receber push. GitHub será o destino de versionamento quando sua URL real for configurada.
+## Repositório
+
+Este projeto está versionado e publicado no GitHub:
+
+https://github.com/hhenriquehhenneberg-crypto/confectionery-orders-api
 
 ## Entidades e relacionamento
 
