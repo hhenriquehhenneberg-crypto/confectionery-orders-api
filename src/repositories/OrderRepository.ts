@@ -2,7 +2,7 @@ import { database } from "../config/database";
 import { Order, CreateOrderDTO, UpdateOrderDTO } from "../models/Order";
 import { AppError } from "../errors/AppError";
 
-// pg devolve numeric como string; NUMERIC(10,2) cabe com segurança na representação da API.
+// Converte o preço para número na resposta
 const fields = "id, customer_id, title, description, occasion, delivery_date, total_price::float8 as total_price, status, created_at, updated_at";
 function rethrow(error: unknown): never {
   if (error && typeof error === "object" && "code" in error && error.code === "23503") {
@@ -28,7 +28,9 @@ export class OrderRepository {
         [data.customer_id, data.title, data.description ?? null, data.occasion ?? null,
           data.delivery_date, data.total_price, data.status ?? "pending"],
       )).rows[0];
-    } catch (error) { return rethrow(error); }
+    } catch (error) {
+      return rethrow(error);
+    }
   }
   async update(id: string, data: UpdateOrderDTO): Promise<Order | undefined> {
     const keys = (["customer_id", "title", "description", "occasion", "delivery_date", "total_price", "status"] as const)
@@ -39,7 +41,9 @@ export class OrderRepository {
         `update orders set ${keys.map((key, i) => `${key} = $${i + 2}`).join(", ")} where id = $1 returning ${fields}`,
         [id, ...keys.map(key => data[key])],
       )).rows[0];
-    } catch (error) { return rethrow(error); }
+    } catch (error) {
+      return rethrow(error);
+    }
   }
   async delete(id: string): Promise<boolean> {
     return (await database.query("delete from orders where id = $1", [id])).rowCount === 1;
