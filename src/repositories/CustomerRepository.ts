@@ -16,7 +16,7 @@ export class CustomerRepository {
     )).rows[0];
   }
   async update(id: string, data: UpdateCustomerDTO): Promise<Customer | undefined> {
-    // Lista fixa de colunas: nomes recebidos do cliente nunca viram SQL.
+    // Campos permitidos na atualização
     const keys = (["name", "phone", "email"] as const).filter(key => data[key] !== undefined);
     if (!keys.length) throw new AppError(400, "Informe ao menos um campo.");
     return (await database.query<Customer>(
@@ -32,7 +32,6 @@ export class CustomerRepository {
     try {
       return (await database.query("delete from customers where id = $1", [id])).rowCount === 1;
     } catch (error) {
-      // A FK também protege contra encomendas criadas entre a verificação e o DELETE.
       if (error && typeof error === "object" && "code" in error && error.code === "23503") {
         throw new AppError(409, "Não é possível excluir um cliente que possui encomendas.");
       }
