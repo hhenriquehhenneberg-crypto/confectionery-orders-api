@@ -1,6 +1,8 @@
 # Confectionery Orders API
 
-API REST para uma confeitaria organizar clientes e encomendas personalizadas, registrando ocasião, data de entrega, preço e situação de cada encomenda. APS desenvolvida sobre a base técnica e o histórico Git das aulas, com domínio próprio e duas entidades principais.
+API REST desenvolvida para gerenciar clientes e encomendas de uma confeitaria.
+
+O projeto foi feito como APS da disciplina de Back-End Development e trabalha com duas entidades relacionadas: `Customer` e `Order`.
 
 ## Integrantes
 
@@ -9,267 +11,316 @@ API REST para uma confeitaria organizar clientes e encomendas personalizadas, re
 
 ## Tecnologias
 
-Node.js 22+, TypeScript (strict), Express 4, PostgreSQL hospedado no Supabase, `pg`, Zod, dotenv e Git. Postman é usado por meio da coleção incluída. Os testes usam o runner do Node.js e PGlite (PostgreSQL compilado para WASM, somente desenvolvimento).
+- Node.js
+- TypeScript
+- Express
+- PostgreSQL
+- Supabase
+- Zod
+- Git e GitHub
 
-## Repositório
-
-Este projeto está versionado e publicado no GitHub:
-
-https://github.com/hhenriquehhenneberg-crypto/confectionery-orders-api
-
-## Entidades e relacionamento
-
-```text
-Customer 1 ───── N Order
-customers.id ← orders.customer_id
-```
-
-Um cliente pode realizar várias encomendas. Cada encomenda pertence obrigatoriamente a um cliente.
-
-| Entidade | Campos |
-|---|---|
-| Customer | id (UUID/PK), name, phone, email opcional, created_at, updated_at |
-| Order | id (UUID/PK), customer_id (UUID/FK), title, description opcional, occasion opcional, delivery_date, total_price, status, created_at, updated_at |
-
-UUIDs são gerados pelo PostgreSQL com `gen_random_uuid()`. A FK impede encomendas órfãs. `ON DELETE RESTRICT` protege o cliente com encomendas. Datas são `timestamptz`; triggers atualizam `updated_at`, inclusive em alterações diretas no banco. `total_price` é `numeric(10,2)` no banco e número no JSON.
-
-## Estrutura
+## Relacionamento
 
 ```text
-confectionery-orders-api/
-├── .env.example
-├── .gitignore
-├── README.md
-├── GUIA_APRESENTACAO.md
-├── CHECKLIST_APS.md
-├── VALIDACAO_SUPABASE.md
-├── package.json
-├── package-lock.json
-├── tsconfig.json
-├── database/
-│   ├── create_tables.sql
-│   └── certs/supabase-root-2021.crt
-├── postman/Confectionery Orders API.postman_collection.json
-├── tests/
-│   ├── api.test.cjs
-│   ├── server.test.cjs
-│   └── helpers/pglite-preload.cjs
-└── src/
-    ├── app.ts
-    ├── server.ts
-    ├── config/database.ts
-    ├── controllers/
-    │   ├── CustomerController.ts
-    │   └── OrderController.ts
-    ├── models/
-    │   ├── Customer.ts
-    │   └── Order.ts
-    ├── repositories/
-    │   ├── CustomerRepository.ts
-    │   ├── OrderRepository.ts
-    │   └── HealthRepository.ts
-    ├── routes/
-    │   ├── customerRoutes.ts
-    │   └── orderRoutes.ts
-    ├── middlewares/
-    │   ├── asyncHandler.ts
-    │   └── errorHandler.ts
-    ├── errors/AppError.ts
-    └── validators/schemas.ts
+Customer 1 ---- N Order
+
+customers.id <- orders.customer_id
 ```
 
-`config` configura a conexão. `models` define tipos e DTOs. `routes` conecta URLs aos controllers. `controllers` valida entradas e coordena regras. `repositories` contém todas as consultas SQL parametrizadas. `validators` centraliza esquemas Zod. `middlewares` encaminha erros assíncronos do Express 4 e padroniza respostas; `errors` define erros esperados. `app.ts` monta o Express e `server.ts` verifica a conexão antes de escutar HTTP. `HealthRepository` apenas verifica a conexão; não representa uma terceira entidade.
+Um cliente pode ter várias encomendas. Cada encomenda pertence a um cliente por meio do campo `customer_id`.
 
-## Configuração e execução
+### Customer
 
-Pré-requisitos: Node.js 22+, npm e um banco PostgreSQL/Supabase configurado.
+- `id`: UUID
+- `name`: nome
+- `phone`: telefone
+- `email`: e-mail opcional
+- `created_at`
+- `updated_at`
 
-Para clonar o projeto:
+### Order
 
-```bash
-git clone https://github.com/hhenriquehhenneberg-crypto/confectionery-orders-api.git
-cd confectionery-orders-api
+- `id`: UUID
+- `customer_id`: UUID do cliente
+- `title`: título da encomenda
+- `description`: descrição
+- `occasion`: ocasião
+- `delivery_date`: data de entrega
+- `total_price`: preço
+- `status`: situação da encomenda
+- `created_at`
+- `updated_at`
+
+## Estrutura do projeto
+
+```text
+src/
+├── config/
+│   └── database.ts
+├── controllers/
+│   ├── CustomerController.ts
+│   └── OrderController.ts
+├── models/
+│   ├── Customer.ts
+│   └── Order.ts
+├── repositories/
+│   ├── CustomerRepository.ts
+│   ├── OrderRepository.ts
+│   └── HealthRepository.ts
+├── routes/
+│   ├── customerRoutes.ts
+│   └── orderRoutes.ts
+├── validators/
+├── middlewares/
+├── errors/
+├── app.ts
+└── server.ts
+```
+
+As `routes` definem os caminhos da API. Os `controllers` recebem e tratam as requisições. Os `repositories` fazem o acesso ao banco. Os `models` representam os dados usados pela aplicação.
+
+## Como rodar pelo terminal do VS Code
+
+### 1. Abrir o projeto
+
+No VS Code, abra a pasta do projeto em:
+
+`File > Open Folder`
+
+Depois abra o terminal:
+
+`Terminal > New Terminal`
+
+### 2. Instalar as dependências
+
+No terminal do VS Code:
+
+```powershell
 npm install
 ```
 
-Se já possui a cópia local, basta entrar na pasta do projeto e executar:
+### 3. Criar o arquivo .env
 
-```bash
-npm install
+No PowerShell:
+
+```powershell
+Copy-Item .env.example .env
 ```
 
-Copie `.env.example` para `.env` (PowerShell: `Copy-Item .env.example .env`; bash: `cp .env.example .env`) e configure a conexão. Execute o SQL conforme a próxima seção.
-
-```bash
-npm run dev
-```
-
-Build e execução compilada:
-
-```bash
-npm run build
-npm start
-```
-
-A API usa `http://localhost:3000`. O servidor só começa a escutar após uma consulta de conexão bem-sucedida. `GET /` retorna `{"message":"Confectionery Orders API","status":"running"}`. `GET /health` retorna `{"status":"ok"}` e indica que o processo HTTP está vivo; não testa a disponibilidade atual do banco.
-
-## Variáveis de ambiente
-
-| Variável | Descrição |
-|---|---|
-| PORT | Porta HTTP, padrão 3000, inteiro entre 1 e 65535 |
-| DATABASE_URL | String PostgreSQL privada copiada de Connect no Supabase |
-| PGSSLROOTCERT | Opcional: caminho do certificado raiz do Supabase se exigido pelo ambiente |
-
-Exemplo sem credenciais reais:
+Edite o arquivo `.env` e coloque a conexão do PostgreSQL/Supabase:
 
 ```env
 PORT=3000
 DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/postgres?sslmode=verify-full
 ```
 
-Para PostgreSQL local sem TLS, use uma URL local sem `sslmode`. Para Supabase, mantenha validação TLS; se houver erro de certificado, configure o certificado raiz fornecido pelo painel. Não desative a validação. Senhas com caracteres reservados devem ser codificadas para URL. `.env`, variações locais, `node_modules` e `dist` são ignorados; `.env.example` é versionado.
+O arquivo `.env` não deve ser enviado para o GitHub.
 
-## Banco no Supabase
+### 4. Criar as tabelas
 
-1. Crie ou abra seu projeto de desenvolvimento no Supabase.
-2. Execute **uma vez** `database/create_tables.sql` no SQL Editor. O script usa transação e não apaga tabelas anteriores nem migra seus dados. Se as tabelas já existirem, não repita o script: ele falhará sem sobrescrevê-las.
-3. Em **Connect**, copie a conexão direta se houver IPv6, ou **Session pooler** para uma rede IPv4. Use host, usuário e porta exatos do painel.
-4. Preencha o `.env` local com a senha do banco e configure TLS conforme acima.
-5. Inicie a API e execute a sequência da coleção Postman.
+No painel do Supabase, abra o SQL Editor e execute:
 
-O backend usa `pg` com a conexão administrativa (`postgres`) do Supabase. As duas tabelas têm RLS habilitado sem políticas públicas: a Data API não libera suas linhas para usuários anônimos. A conexão administrativa do backend tem acesso. Não são necessárias chaves `anon` ou `service_role` na aplicação.
+```text
+database/create_tables.sql
+```
 
-A conexão real foi validada em 30/09/2026 (America/Sao_Paulo) no projeto `restaurant-ordering-system` (`uxrixrkhrvzgitsjfgml`), usando Session Pooler `aws-0-sa-east-1.pooler.supabase.com:5432`, banco `postgres` e TLS `verify-full`. Os 11 endpoints e os erros 400/404/409 passaram, e os registros de teste foram excluídos. Nenhuma tabela remota foi criada, removida ou alterada nesta validação. Caso já existam tabelas antigas no projeto hospedado, elas permanecem intactas e não são usadas pela API; sua eventual remoção deve ser avaliada separadamente.
+Esse arquivo cria as tabelas `customers` e `orders`, incluindo a chave estrangeira entre elas.
 
-Referência: [conexão PostgreSQL no Supabase](https://supabase.com/docs/guides/database/connecting-to-postgres).
+### 5. Iniciar a API
+
+No terminal do VS Code:
+
+```powershell
+npm run dev
+```
+
+Com `PORT=3000`, a API fica disponível em:
+
+```text
+http://localhost:3000
+```
+
+Para conferir:
+
+```powershell
+Invoke-RestMethod -Uri "http://localhost:3000"
+```
+
+## API publicada
+
+A versão publicada pode ser acessada em:
+
+https://confectionery-orders-api.onrender.com
+
+Exemplo:
+
+```powershell
+Invoke-RestMethod -Uri "https://confectionery-orders-api.onrender.com/customers"
+```
+
+## Testando o CRUD pelo terminal do VS Code
+
+Os comandos abaixo usam a API publicada no Render.
+
+Abra um terminal PowerShell no VS Code e comece definindo o endereço:
+
+```powershell
+$baseUrl = "https://confectionery-orders-api.onrender.com"
+```
+
+### Criar cliente
+
+```powershell
+$email = "cliente.teste.$(Get-Date -Format 'yyyyMMddHHmmss')@example.com"
+
+$customerBody = @{
+  name = "Cliente Teste"
+  phone = "41999990000"
+  email = $email
+} | ConvertTo-Json
+
+$customer = Invoke-RestMethod -Method Post `
+  -Uri "$baseUrl/customers" `
+  -ContentType "application/json" `
+  -Body $customerBody
+
+$customerId = $customer.id
+$customer | Format-List
+```
+
+### Consultar cliente
+
+```powershell
+Invoke-RestMethod -Uri "$baseUrl/customers/$customerId" | Format-List
+```
+
+### Criar encomenda
+
+```powershell
+$orderBody = @{
+  customer_id = $customerId
+  title = "Bolo de aniversario"
+  description = "Bolo de chocolate para 30 pessoas"
+  occasion = "birthday"
+  delivery_date = "2026-10-25T15:00:00-03:00"
+  total_price = 280
+  status = "pending"
+} | ConvertTo-Json
+
+$order = Invoke-RestMethod -Method Post `
+  -Uri "$baseUrl/orders" `
+  -ContentType "application/json" `
+  -Body $orderBody
+
+$orderId = $order.id
+$order | Format-List
+```
+
+### Consultar encomendas do cliente
+
+```powershell
+Invoke-RestMethod -Uri "$baseUrl/customers/$customerId/orders" | ConvertTo-Json -Depth 5
+```
+
+### Atualizar encomenda
+
+```powershell
+$updateBody = @{
+  title = "Bolo de aniversario personalizado"
+  description = "Bolo de chocolate para 40 pessoas"
+  occasion = "birthday"
+  delivery_date = "2026-10-25T16:00:00-03:00"
+  total_price = 320
+  status = "confirmed"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Method Put `
+  -Uri "$baseUrl/orders/$orderId" `
+  -ContentType "application/json" `
+  -Body $updateBody
+```
+
+### Testar a proteção do relacionamento
+
+Enquanto a encomenda existir, tente excluir o cliente:
+
+```powershell
+Invoke-WebRequest -Method Delete -Uri "$baseUrl/customers/$customerId"
+```
+
+O retorno esperado é `409 Conflict`, porque ainda existe uma encomenda vinculada ao cliente.
+
+### Excluir a encomenda
+
+```powershell
+Invoke-WebRequest -Method Delete -Uri "$baseUrl/orders/$orderId"
+```
+
+O retorno esperado é `204 No Content`.
+
+### Excluir o cliente
+
+```powershell
+Invoke-WebRequest -Method Delete -Uri "$baseUrl/customers/$customerId"
+```
+
+Agora o retorno esperado também é `204 No Content`.
 
 ## Endpoints
 
-| Método | Endpoint | Sucesso | Descrição |
-|---|---|---|---|
-| GET | `/customers` | 200 | Lista clientes |
-| GET | `/customers/:id` | 200 | Consulta cliente |
-| POST | `/customers` | 201 | Cadastra cliente |
-| PUT | `/customers/:id` | 200 | Atualiza cliente |
-| DELETE | `/customers/:id` | 204 | Exclui cliente sem encomendas |
-| GET | `/orders` | 200 | Lista encomendas |
-| GET | `/orders/:id` | 200 | Consulta encomenda |
-| POST | `/orders` | 201 | Cadastra encomenda |
-| PUT | `/orders/:id` | 200 | Atualiza encomenda |
-| DELETE | `/orders/:id` | 204 | Exclui encomenda |
-| GET | `/customers/:id/orders` | 200 | Lista encomendas do cliente |
+| Método | Endpoint | Descrição |
+|---|---|---|
+| GET | `/customers` | Lista clientes |
+| GET | `/customers/:id` | Consulta um cliente |
+| POST | `/customers` | Cria um cliente |
+| PUT | `/customers/:id` | Atualiza um cliente |
+| DELETE | `/customers/:id` | Exclui um cliente |
+| GET | `/orders` | Lista encomendas |
+| GET | `/orders/:id` | Consulta uma encomenda |
+| POST | `/orders` | Cria uma encomenda |
+| PUT | `/orders/:id` | Atualiza uma encomenda |
+| DELETE | `/orders/:id` | Exclui uma encomenda |
+| GET | `/customers/:id/orders` | Lista as encomendas de um cliente |
 
-Listas retornam arrays, inclusive `[]`. Consultas, criação e atualização retornam o objeto da entidade. POST também retorna `Location`. DELETE bem-sucedido não retorna corpo.
+## Códigos HTTP usados
 
-### Regras de atualização e validação
-
-Os endpoints PUT aceitam **atualização parcial**, conforme o exemplo da APS: campos omitidos são preservados, e o corpo precisa conter ao menos um campo. `email`, `description` e `occasion` podem ser limpos com `null`. IDs e timestamps não podem ser enviados. Campos desconhecidos são recusados.
-
-- Customer: `name` (1–120) e `phone` (1–30) obrigatórios, após remover espaços nas extremidades. Email opcional, válido e com até 150 caracteres.
-- Order: `customer_id` UUID existente, `title` (1–150), `delivery_date` ISO 8601 com horário/fuso e `total_price` numérico entre 0 e 99.999.999,99, com até duas casas decimais. Não se exige data futura.
-- `description`: até 500 caracteres. `occasion`: `birthday`, `wedding`, `party`, `corporate`, `other` ou null.
-- `status`: `pending`, `confirmed`, `in_production`, `ready`, `delivered`, `cancelled`. Na criação, omissão usa `pending`.
-- Alterar `customer_id` exige outro cliente existente. Excluir cliente com qualquer encomenda, inclusive cancelada, retorna 409.
-
-## Exemplos de requisições
-
-Envie `Content-Type: application/json`. Substitua `:id` pelo UUID retornado na criação.
-
-### POST /customers
-
-```json
-{
-  "name": "Mariana Souza",
-  "phone": "41999999999",
-  "email": "mariana@example.com"
-}
-```
-
-### PUT /customers/:id
-
-```json
-{
-  "name": "Mariana Souza",
-  "phone": "41988888888",
-  "email": "mariana.souza@example.com"
-}
-```
-
-### POST /orders
-
-```json
-{
-  "customer_id": "UUID_RETORNADO_AO_CRIAR_CLIENTE",
-  "title": "Bolo de aniversário",
-  "description": "Bolo de chocolate com brigadeiro para 30 pessoas",
-  "occasion": "birthday",
-  "delivery_date": "2026-10-25T15:00:00-03:00",
-  "total_price": 280,
-  "status": "pending"
-}
-```
-
-### PUT /orders/:id
-
-```json
-{
-  "title": "Bolo de aniversário personalizado",
-  "description": "Bolo de chocolate para 40 pessoas",
-  "occasion": "birthday",
-  "delivery_date": "2026-10-25T16:00:00-03:00",
-  "total_price": 320,
-  "status": "confirmed"
-}
-```
-
-
-
-## Códigos HTTP
-
-| Código | Uso |
+| Código | Significado |
 |---|---|
-| 200 | Consulta ou atualização bem-sucedida |
-| 201 | Entidade criada |
-| 204 | Exclusão concluída, sem corpo |
-| 400 | UUID, JSON ou dados inválidos |
-| 404 | Registro/rota inexistente, inclusive cliente de uma encomenda |
-| 409 | Cliente possui encomendas e não pode ser excluído |
-| 413 | Corpo excede o limite de 100 KB |
-| 500 | Falha inesperada, sem stack trace ou detalhes privados |
+| 200 | Operação realizada com sucesso |
+| 201 | Registro criado |
+| 204 | Registro excluído |
+| 400 | Dados inválidos |
+| 404 | Registro não encontrado |
+| 409 | Conflito de relacionamento |
+| 500 | Erro interno |
 
-Erro esperado: `{"message":"Cliente não encontrado."}`. Validação: `{"message":"Dados inválidos.","errors":[{"field":"name","message":"Campo não pode ficar vazio."}]}`.
+## Validações
 
-## Postman e apresentação
+A API valida os dados recebidos antes de gravar no banco.
 
-Importe `postman/Confectionery Orders API.postman_collection.json`. A coleção define `baseUrl`, `customerId` e `orderId`. POST salva automaticamente os IDs retornados. Execute manualmente o roteiro de `GUIA_APRESENTACAO.md`: crie cliente, crie encomenda, consulte, atualize e exclua a encomenda antes do cliente. As pastas agrupam recursos e não são uma sequência pronta para o Collection Runner.
+Algumas regras:
 
-## Testes e limites de verificação
+- nome e telefone do cliente são obrigatórios;
+- e-mail, quando informado, precisa ser válido;
+- `customer_id` precisa ser um UUID de cliente existente;
+- preço não pode ser negativo;
+- status deve estar entre os valores aceitos pela aplicação;
+- um cliente com encomendas não pode ser excluído.
 
-```bash
+## Testes do projeto
+
+No terminal do VS Code:
+
+```powershell
 npm run typecheck
 npm run build
 npm test
 ```
 
-Os testes HTTP executam o SQL real em PGlite, sem credenciais nem acesso ao Supabase. Cobrem os 11 endpoints, regras de validação, integridade referencial, timestamps e erros. O teste de inicialização executa `dist/server.js` em processo separado com transporte de banco adaptado para PGlite. Isso valida o servidor e a lógica SQL, mas **não** valida rede, TLS, permissões ou conectividade do Supabase; esses pontos foram verificados separadamente na validação real descrita acima. Consulte `VALIDACAO_SUPABASE.md` para os resultados.
+## Postman
 
-Não há frontend, autenticação, pagamentos ou estoque. A API destina-se à demonstração acadêmica em ambiente controlado.
+A pasta `postman` contém uma collection pronta para quem preferir testar a API pelo Postman. O fluxo principal deste README usa o terminal do VS Code.
 
-## Git
+## Repositório
 
-Histórico original preservado: `96b31b3`, `7f9520b`, `c6fef4c`. Branch `main`. O projeto está publicado em `https://github.com/hhenriquehhenneberg-crypto/confectionery-orders-api` e o remote `origin` deve apontar para esse repositório. O arquivo `.env` permanece fora do versionamento.
-
-## Configuração local validada
-
-Nesta máquina, a porta 3000 já estava ocupada. O `.env` local usa `PORT=3001`; no Postman, configure `baseUrl=http://localhost:3001`. O padrão do projeto e da coleção continua sendo 3000.
-
-O Session Pooler exigiu o certificado raiz público incluído em `database/certs/supabase-root-2021.crt`. Configure no `.env`, executando os comandos na raiz do projeto:
-
-```env
-PGSSLROOTCERT=database/certs/supabase-root-2021.crt
-```
-
-A URL deve conservar `?sslmode=verify-full`. O certificado não contém chave privada. Ele foi obtido por HTTPS no [distribuidor do Supabase](https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt). Para certificados futuros, use o painel do projeto conforme a [documentação TLS](https://supabase.com/docs/guides/platform/ssl-enforcement).
-
-Ao montar a URL, codifique apenas a senha com percent-encoding (por exemplo, `@` vira `%40`, `#` vira `%23` e `%` vira `%25`), sem codificar a URL inteira nem repetir a codificação. Não envie credenciais ao chat nem as coloque em documentação ou commits.
+https://github.com/hhenriquehhenneberg-crypto/confectionery-orders-api
