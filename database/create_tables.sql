@@ -1,6 +1,6 @@
--- Execute uma vez no SQL Editor do Supabase, em um projeto de desenvolvimento.
--- Não remove nem converte tabelas preexistentes. A transação impede criação parcial.
 begin;
+
+-- Clientes
 create table public.customers (
     id uuid primary key default gen_random_uuid(),
     name varchar(120) not null check (length(btrim(name)) > 0),
@@ -9,6 +9,8 @@ create table public.customers (
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
+
+-- Encomendas
 create table public.orders (
     id uuid primary key default gen_random_uuid(),
     customer_id uuid not null,
@@ -26,6 +28,7 @@ create table public.orders (
     constraint chk_orders_occasion check (occasion is null or occasion in ('birthday','wedding','party','corporate','other'))
 );
 create index idx_orders_customer_id on public.orders(customer_id);
+-- Atualiza updated_at
 create function public.set_confectionery_updated_at() returns trigger
 language plpgsql set search_path = '' as $$
 begin
@@ -37,8 +40,6 @@ create trigger customers_updated_at before update on public.customers
 for each row execute function public.set_confectionery_updated_at();
 create trigger orders_updated_at before update on public.orders
 for each row execute function public.set_confectionery_updated_at();
--- A API usa pg com a conexão administrativa do backend, não a Data API pública.
--- Sem políticas públicas: anon/authenticated não recebem acesso às linhas.
 alter table public.customers enable row level security;
 alter table public.orders enable row level security;
 commit;
