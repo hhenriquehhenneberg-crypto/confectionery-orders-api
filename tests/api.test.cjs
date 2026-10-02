@@ -8,7 +8,6 @@ const app = require('../dist/app').default;
 const db = new PGlite();
 let server, base;
 const originalQuery = database.query;
-// PostgreSQL real compilado para WASM; só o transporte pg é substituído.
 database.query = async (text, values) => {
   const result = await db.query(text, values);
   return { rows: result.rows, rowCount: result.affectedRows ?? result.rows.length };
