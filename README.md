@@ -57,7 +57,7 @@ Pré-requisitos:
 Clone o repositório:
 
 ```powershell
-git clone https://github.com/hhenriquehhenberg-crypto/confectionery-orders-api.git
+git clone https://github.com/hhenriquehhenneberg-crypto/confectionery-orders-api.git
 cd confectionery-orders-api
 npm install
 ```
