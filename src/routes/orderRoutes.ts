@@ -10,4 +10,5 @@ router.post("/", asyncHandler(controller.create));
 router.put("/:id", asyncHandler(controller.update));
 router.delete("/:id", asyncHandler(controller.delete));
 
+router.get("/:id/payments", asyncHandler(controller.listPayments));
 export default router;

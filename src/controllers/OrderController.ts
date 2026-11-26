@@ -1,42 +1,27 @@
 import { Request, Response } from "express";
-import { OrderRepository } from "../repositories/OrderRepository";
-import { CustomerRepository } from "../repositories/CustomerRepository";
-import { AppError } from "../errors/AppError";
+import { OrderService } from "../services/OrderService";
 import { uuidSchema, orderSchema, orderUpdateSchema } from "../validators/schemas";
 
 export class OrderController {
-  private readonly repository = new OrderRepository();
-  private readonly customers = new CustomerRepository();
+  constructor(private readonly service = new OrderService()) {}
   list = async (_req: Request, res: Response): Promise<void> => {
-    res.json(await this.repository.findAll());
+    res.json(await this.service.list());
   };
   get = async (req: Request, res: Response): Promise<void> => {
-    const id = uuidSchema.parse(req.params.id);
-    const result = await this.repository.findById(id);
-    if (!result) throw new AppError(404, "Encomenda não encontrada.");
-    res.json(result);
+    res.json(await this.service.get(uuidSchema.parse(req.params.id)));
   };
   create = async (req: Request, res: Response): Promise<void> => {
-    const data = orderSchema.parse(req.body);
-    if (!await this.customers.findById(data.customer_id)) throw new AppError(404, "Cliente não encontrado.");
-    const result = await this.repository.create(data);
+    const result = await this.service.create(orderSchema.parse(req.body));
     res.location(`/orders/${result.id}`).status(201).json(result);
   };
   update = async (req: Request, res: Response): Promise<void> => {
-    const id = uuidSchema.parse(req.params.id);
-    const data = orderUpdateSchema.parse(req.body);
-    if (!await this.repository.findById(id)) throw new AppError(404, "Encomenda não encontrada.");
-    if (data.customer_id && !await this.customers.findById(data.customer_id)) throw new AppError(404, "Cliente não encontrado.");
-    const result = await this.repository.update(id, data);
-    if (!result) throw new AppError(404, "Encomenda não encontrada.");
-    res.json(result);
+    res.json(await this.service.update(uuidSchema.parse(req.params.id), orderUpdateSchema.parse(req.body)));
   };
   delete = async (req: Request, res: Response): Promise<void> => {
-    const id = uuidSchema.parse(req.params.id);
-    if (!await this.repository.findById(id)) throw new AppError(404, "Encomenda não encontrada.");
-
-    if (!await this.repository.delete(id)) throw new AppError(404, "Encomenda não encontrada.");
+    await this.service.delete(uuidSchema.parse(req.params.id));
     res.status(204).send();
   };
-
+  listPayments = async (req: Request, res: Response): Promise<void> => {
+    res.json(await this.service.listPayments(uuidSchema.parse(req.params.id)));
+  };
 }

@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { test } = require('node:test');
+import { test } from "vitest";
 const { spawn } = require('node:child_process');
 const { createServer } = require('node:net');
 const { once } = require('node:events');

@@ -22,3 +22,15 @@ export const orderSchema = z.object({
 }).strict();
 export const customerUpdateSchema = customerSchema.partial().refine(data => Object.keys(data).length > 0, "Informe ao menos um campo.");
 export const orderUpdateSchema = orderSchema.partial().refine(data => Object.keys(data).length > 0, "Informe ao menos um campo.");
+
+import { paymentMethods } from "../models/Payment";
+export const paymentSchema = z.object({
+  order_id: uuidSchema,
+  amount: z.number().finite().positive().max(99999999.99).refine(
+    value => Math.abs(value * 100 - Math.round(value * 100)) < 0.000001,
+    "Valor deve ter no máximo duas casas decimais.",
+  ),
+  method: z.enum(paymentMethods),
+}).strict();
+export const paymentUpdateSchema = paymentSchema.omit({ order_id: true }).partial()
+  .refine(data => Object.keys(data).length > 0, "Informe ao menos um campo.");
