@@ -16,7 +16,9 @@
     "pretest:integration": "npm run build",
     "pretest:coverage": "npm run build",
     "demo": "node scripts/demo.cjs",
-    "predemo": "npm run build"
+    "predemo": "npm run build",
+    "doctor": "node scripts/check-database.cjs",
+    "predoctor": "npm run build"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

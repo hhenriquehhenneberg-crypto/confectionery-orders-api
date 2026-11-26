@@ -235,4 +235,8 @@ npm run test:coverage
 
 Consulte [docs/DEMONSTRACAO.md](docs/DEMONSTRACAO.md). O professor deve conseguir executar o projeto, acessar o Swagger e reproduzir os testes. Envie o link deste repositório na atividade correta do AVA; publicar no GitHub não registra a entrega no AVA.
 
+O [roteiro de apresentação](docs/APRESENTACAO.md) reúne uma demonstração de aproximadamente cinco minutos e perguntas sobre os conceitos. A [validação no Supabase real](docs/VALIDACAO-SUPABASE.md) registra a atualização e as 22 requisições verificadas. A coleção em postman/Doce Gestao - Avaliacao Final.postman_collection.json pode ser importada no Postman e executada em ordem; ajuste baseUrl conforme a porta da sua API.
+
+Execute npm run doctor para um diagnóstico somente leitura da conexão, do TLS e das três tabelas. O comando não exibe credenciais nem registros.
+
 O .env com credenciais reais não é versionado. A API é uma demonstração acadêmica sem autenticação; mantenha dados fictícios. O registro de pagamentos não integra adquirentes, Pix ou instituições financeiras.
