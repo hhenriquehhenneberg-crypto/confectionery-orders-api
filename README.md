@@ -1,12 +1,41 @@
-# Confectionery Orders API
+# Doce Gestão · Confectionery Orders API
 
 API REST para cadastrar clientes, gerenciar encomendas e registrar pagamentos de uma confeitaria. Evolução do projeto da primeira avaliação da disciplina Desenvolvimento Back-End.
+
+Inclui o **Doce Gestão**, uma interface responsiva para administrar os três recursos pelo navegador.
+
+## Abrir a interface
+
+Com a API configurada e em execução, acesse **http://localhost:3000/app/**. O Express serve os arquivos de public/ junto à API; não é preciso iniciar outro servidor ou configurar CORS.
+
+Para experimentar **sem credenciais e sem Supabase**, execute:
+
+```powershell
+npm ci
+npm run demo
+```
+
+Abra **http://localhost:3100/app/**. A demonstração usa PGlite e cria dados fictícios em .demo-data/ somente na primeira execução. As alterações ficam nesse diretório local e são preservadas entre execuções. Ele não é versionado e não acessa o banco da aplicação. DEMO_PORT permite escolher outra porta; o servidor de demonstração aceita apenas conexões locais.
+
+O painel permite:
+
+- Consultar encomendas em aberto, produção, recebimentos e saldo a receber.
+- Visualizar as próximas entregas e os recebimentos dos últimos sete dias.
+- Cadastrar, consultar, editar e excluir clientes, encomendas e pagamentos.
+- Buscar registros sem diferenciar acentos ou maiúsculas.
+- Filtrar por status da encomenda ou método de pagamento.
+- Consultar detalhes e pagamentos relacionados.
+- Exportar a seleção atual em CSV, com proteção contra fórmulas de planilha.
+
+Valores, datas, estados vazios e erros vêm dos dados da API. O modo de demonstração é identificado por um aviso visível. A interface usa HTML, CSS e módulos JavaScript nativos, com navegação por teclado, formulários rotulados e adaptação para celular.
 
 **Estudante responsável:** Henrique Henneberg Nurdim.
 
 ## Tecnologias
 
 Node.js 22.12+, TypeScript, Express, PostgreSQL/Supabase (conexão direta com pg), Zod, Vitest, Supertest, PGlite e Swagger/OpenAPI. O lockfile registra as versões utilizadas.
+
+Front-end: HTML5, CSS responsivo e JavaScript ES Modules. As fontes têm alternativas locais caso o Google Fonts esteja indisponível.
 
 ## Entidades e relacionamentos
 
@@ -65,6 +94,8 @@ tests/
   unit/          domínio e Services com dependências isoladas
   integration/   endpoints, banco temporário, atualização SQL e servidor
 docs/            evidências de cobertura e roteiro de demonstração
+public/          interface Doce Gestão (HTML, CSS e JavaScript)
+scripts/         demonstração local com PGlite
 ```
 
 ## Configuração e execução
@@ -195,6 +226,7 @@ npm run test:coverage
 - Por padrão, os testes não usam o Supabase real, não exigem DATABASE_URL e não alteram registros da aplicação. Cada arquivo de integração possui banco temporário próprio, fechado ao terminar.
 - PGlite usa uma conexão; o adaptador de testes serializa transações. Para verificar bloqueios com várias conexões PostgreSQL reais, defina TEST_DATABASE_URL para um PostgreSQL de testes e execute npm run test:integration. O teste cria um schema exclusivo e o remove ao terminar. O usuário precisa de permissão para criar schemas. Use um banco de testes.
 - Cobertura V8 mede todo src, incluindo Models, Controllers, Services, Repositories, Routes e servidor. Apenas configuração do banco é excluída. Código executado em subprocesso aparece sem cobertura no processo principal.
+- As regras financeiras, a busca e a exportação CSV do front-end também têm testes unitários. public/domain.js é incluído na cobertura. A renderização e os formulários de public/app.js foram verificados manualmente no navegador; não entram no percentual de cobertura do back-end.
 - O comando falha se linhas, instruções, funções ou ramificações ficarem abaixo de 60%.
 - O relatório HTML fica em `coverage/index.html`; métricas estão em `coverage/coverage-summary.json`. O resumo da última execução validada está em [docs/COVERAGE.md](docs/COVERAGE.md).
 - GitHub Actions sobe PostgreSQL 17 temporário e executa compilação, verificação de tipos e testes com cobertura, incluindo os pagamentos concorrentes em conexões reais. O relatório completo é disponibilizado como artefato do workflow.

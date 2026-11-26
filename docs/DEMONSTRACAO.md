@@ -1,5 +1,20 @@
 # Demonstração da avaliação final
 
+## Pela interface
+
+1. Para usar dados fictícios locais, execute npm ci e npm run demo. Abra http://localhost:3100/app/.
+2. Para usar o banco da aplicação, configure o .env, aplique o SQL adequado, execute npm run dev e abra http://localhost:3000/app/.
+3. Em Clientes, cadastre um cliente e abra seus detalhes.
+4. Clique em Encomenda nos detalhes do cliente e crie uma encomenda de R$ 280.
+5. Abra a encomenda, clique em Registrar e salve um pagamento de R$ 100. O saldo deve mudar para R$ 180.
+6. Edite o pagamento para R$ 120. O saldo deve mudar para R$ 160.
+7. Tente reduzir o preço da encomenda para R$ 99: a interface deve exibir a regra de negócio.
+8. Use os filtros, a busca e a exportação CSV.
+9. Exclua somente os registros fictícios criados para a apresentação, na ordem: pagamento, encomenda, cliente.
+10. Mostre a visão geral e o layout adaptado para celular.
+
+## Pela documentação da API
+
 1. Execute o script SQL adequado ao seu banco, configure o .env e inicie com npm run dev.
 2. Abra /api-docs/ e mostre as três entidades: clientes, encomendas e pagamentos.
 3. Cadastre um cliente e copie seu UUID.

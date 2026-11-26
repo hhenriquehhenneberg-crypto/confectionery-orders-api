@@ -6,7 +6,7 @@ export default defineConfig({
     hookTimeout: 20000,
     coverage: {
       provider: "v8",
-      include: ["src/**/*.ts"],
+      include: ["src/**/*.ts", "public/domain.js"],
       // Configuração e ponto de entrada são verificados também pelos testes do servidor.
       exclude: ["src/config/**"],
       reporter: ["text", "html", "json-summary", "lcov"],

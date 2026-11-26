@@ -175,6 +175,21 @@ test("Swagger documenta todos os recursos e responde pela interface interativa",
   expect(html.text).toContain("swagger-ui");
 });
 
+test("interface é servida junto à API sem expor configuração sensível", async () => {
+  await api.get("/app").expect(301);
+  const page = await api.get("/app/").expect(200);
+  expect(page.type).toBe("text/html");
+  expect(page.text).toContain("Doce Gestão");
+  expect(page.text).toContain('id="form-dialog"');
+  const script = await api.get("/app/app.js").expect(200);
+  expect(script.type).toMatch(/javascript/);
+  const stylesheet = await api.get("/app/styles.css").expect(200);
+  expect(stylesheet.type).toBe("text/css");
+  const config = await api.get("/app/config.json").expect(200);
+  expect(Object.keys(config.body)).toEqual(["demo"]);
+  expect(typeof config.body.demo).toBe("boolean");
+});
+
 test("JSON malformado, limite do corpo, rota desconhecida e falha interna sem vazamento", async () => {
   await api.post("/customers").set("Content-Type", "application/json").send("{").expect(400);
   await api.post("/customers").send({ name: "x".repeat(110000) }).expect(413);

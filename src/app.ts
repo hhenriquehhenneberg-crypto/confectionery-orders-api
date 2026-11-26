@@ -1,4 +1,5 @@
 import express from "express";
+import path from "node:path";
 import swaggerUi from "swagger-ui-express";
 import customerRoutes from "./routes/customerRoutes";
 import orderRoutes from "./routes/orderRoutes";
@@ -14,6 +15,10 @@ app.get("/", (_req, res) => {
 });
 // Liveness: informa que o processo está atendendo; a conexão é verificada ao iniciar o servidor.
 app.get("/health", (_req, res) => { res.json({ status: "ok" }); });
+app.get("/app/config.json", (_req, res) => {
+  res.json({ demo: process.env.DEMO_MODE === "true" });
+});
+app.use("/app", express.static(path.join(__dirname, "..", "public")));
 app.get("/openapi.json", (_req, res) => { res.json(openapi); });
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapi));
 app.use("/customers", customerRoutes);
