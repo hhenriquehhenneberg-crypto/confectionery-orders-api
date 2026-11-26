@@ -1,7 +1,7 @@
 # Roteiro de apresentação
 
 ROTEIRO DE APRESENTAÇÃO — DOCE GESTÃO
-Henrique Henneberg Nurdim · Desenvolvimento Back-End
+Henrique Henneberg Nurdim e Carlos Bueno · Desenvolvimento Back-End
 Avaliação: 26/11/2026 · Entrega no AVA até 22h10
 
 ANTES DE SAIR PARA A AULA

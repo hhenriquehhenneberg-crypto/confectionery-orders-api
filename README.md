@@ -29,7 +29,7 @@ O painel permite:
 
 Valores, datas, estados vazios e erros vêm dos dados da API. O modo de demonstração é identificado por um aviso visível. A interface usa HTML, CSS e módulos JavaScript nativos, com navegação por teclado, formulários rotulados e adaptação para celular.
 
-**Estudante responsável:** Henrique Henneberg Nurdim.
+**Integrantes da equipe:** Henrique Henneberg Nurdim e Carlos Bueno.
 
 ## Tecnologias
 
