@@ -231,6 +231,10 @@ npm run test:coverage
 - O relatório HTML fica em `coverage/index.html`; métricas estão em `coverage/coverage-summary.json`. O resumo da última execução validada está em [docs/COVERAGE.md](docs/COVERAGE.md).
 - GitHub Actions sobe PostgreSQL 17 temporário e executa compilação, verificação de tipos e testes com cobertura, incluindo os pagamentos concorrentes em conexões reais. O relatório completo é disponibilizado como artefato do workflow.
 
+## Vídeo de apresentação
+
+[▶ Assistir ao vídeo (3min44)](docs/video/Doce-Gestao-Video.mp4) — Henrique Henneberg Nurdim e Carlos Bueno apresentam o projeto: entidades e regras, camadas, endpoints em execução no Supabase, testes, cobertura, Swagger e aprendizados. Narração sintetizada, telas reais da aplicação e dados fictícios.
+
 ## Entrega e demonstração
 
 Consulte [docs/DEMONSTRACAO.md](docs/DEMONSTRACAO.md). O professor deve conseguir executar o projeto, acessar o Swagger e reproduzir os testes. Envie o link deste repositório na atividade correta do AVA; publicar no GitHub não registra a entrega no AVA.
